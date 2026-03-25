@@ -50,6 +50,13 @@ class Settings:
     daily_loss_limit_pct: float = 0.03   # halt at -3% daily loss
     weekly_drawdown_limit_pct: float = 0.08  # pause at -8% 7-day drawdown
 
+    # ── Bankroll cap ───────────────────────────────────────────────────────────
+    # Agent will use min(actual_balance, max_bankroll_usd) as effective bankroll.
+    # Set to 0 to disable (use full account balance).
+    max_bankroll_usd: float = field(
+        default_factory=lambda: float(_opt("MAX_BANKROLL_USD", "0"))
+    )
+
     # ── Entry thresholds ───────────────────────────────────────────────────────
     min_pcs: int = 75                     # Minimum Probability Confidence Score
     min_edge: float = 0.05               # Minimum edge over implied probability (5 pts)

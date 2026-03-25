@@ -97,7 +97,11 @@ class DecisionEngine:
             return
 
         balance = self._kalshi.get_balance()
-        bankroll = balance.get("available", 0.0)
+        raw_bankroll = balance.get("available", 0.0)
+        # Honour the MAX_BANKROLL_USD cap (e.g. $50 for initial deployment).
+        cap = self._settings.max_bankroll_usd
+        bankroll = min(raw_bankroll, cap) if cap > 0 else raw_bankroll
+        logger.info("Effective bankroll: $%.2f (account available: $%.2f)", bankroll, raw_bankroll)
         positions = self._kalshi.get_positions()
         open_exposure = sum(
             p.get("value", 0.0) for p in positions

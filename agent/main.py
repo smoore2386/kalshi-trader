@@ -7,7 +7,14 @@ import logging
 import signal
 import sys
 from datetime import datetime
+from pathlib import Path
 from zoneinfo import ZoneInfo
+
+from dotenv import load_dotenv
+
+# Load .env before anything else so Settings() can read the vars.
+_ENV_PATH = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=_ENV_PATH, override=False)
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
