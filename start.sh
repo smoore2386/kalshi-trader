@@ -6,12 +6,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# Ensure .env has a Discord webhook before starting
-if ! grep -q "DISCORD_WEBHOOK_URL=https://" .env 2>/dev/null; then
-  echo "ERROR: DISCORD_WEBHOOK_URL is not set in .env"
-  echo "  Edit .env and paste your Discord trading channel webhook URL, then re-run."
-  exit 1
-fi
+# Discord is handled natively by OpenClaw — no webhook URL required here.
 
 # Ensure venv exists
 if [ ! -f ".venv/bin/python3" ]; then
