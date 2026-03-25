@@ -26,8 +26,8 @@ STATIONS: dict[str, dict] = {
         "lat": 25.7959,
         "lon": -80.2870,
         "wfo": "MFL",
-        "grid_x": 110,
-        "grid_y": 47,
+        "grid_x": 106,
+        "grid_y": 51,
         "timezone": "America/New_York",
     },
     "KMDW": {

@@ -22,7 +22,7 @@ from config.settings import Settings
 
 logger = get_logger("kalshi_client")
 
-_BASE_URL = "https://trading-api.kalshi.com/trade-api/v2/"
+_BASE_URL = "https://api.elections.kalshi.com/trade-api/v2/"
 
 
 class KalshiAPIError(Exception):
