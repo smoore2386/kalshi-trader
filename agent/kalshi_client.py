@@ -16,6 +16,7 @@ from urllib.parse import urljoin
 import requests
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.asymmetric.padding import MGF1, PSS
 
 from agent.logger import get_logger
 from config.settings import Settings
@@ -46,12 +47,19 @@ class KalshiClient:
     # ── Auth helpers ───────────────────────────────────────────────────────────
 
     def _sign(self, method: str, path: str, body: str = "") -> dict[str, str]:
-        """Return Kalshi-required auth headers for an RSA-signed request."""
+        """Return Kalshi-required auth headers for an RSA-signed request.
+
+        Kalshi Elections API requires RSA-PSS (DIGEST_LENGTH salt) with the
+        full path including the /trade-api/v2 prefix in the signed message.
+        """
         timestamp_ms = str(int(time.time() * 1000))
-        msg = f"{timestamp_ms}{method.upper()}{path}{body}"
+        # Path in the signed message must include the full /trade-api/v2/ prefix.
+        full_path = "/trade-api/v2/" + path.lstrip("/")
+        msg = f"{timestamp_ms}{method.upper()}{full_path}{body}"
+        pss_padding = PSS(mgf=MGF1(hashes.SHA256()), salt_length=PSS.DIGEST_LENGTH)
         signature = self._private_key.sign(
             msg.encode(),
-            padding.PKCS1v15(),
+            pss_padding,
             hashes.SHA256(),
         )
         return {
@@ -62,7 +70,7 @@ class KalshiClient:
 
     def _get(self, path: str, params: dict | None = None) -> Any:
         url = urljoin(_BASE_URL, path.lstrip("/"))
-        headers = self._sign("GET", "/" + path.lstrip("/"))
+        headers = self._sign("GET", path)
         resp = self._session.get(url, headers=headers, params=params, timeout=10)
         self._raise_for_status(resp)
         return resp.json()
@@ -71,14 +79,14 @@ class KalshiClient:
         import json
         url = urljoin(_BASE_URL, path.lstrip("/"))
         body_str = json.dumps(body, separators=(",", ":"))
-        headers = self._sign("POST", "/" + path.lstrip("/"), body_str)
+        headers = self._sign("POST", path, body_str)
         resp = self._session.post(url, headers=headers, data=body_str, timeout=10)
         self._raise_for_status(resp)
         return resp.json()
 
     def _delete(self, path: str) -> Any:
         url = urljoin(_BASE_URL, path.lstrip("/"))
-        headers = self._sign("DELETE", "/" + path.lstrip("/"))
+        headers = self._sign("DELETE", path)
         resp = self._session.delete(url, headers=headers, timeout=10)
         self._raise_for_status(resp)
         return resp.json()
