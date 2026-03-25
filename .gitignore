@@ -1,0 +1,54 @@
+# ── Credentials & secrets ──────────────────────────────────────────────────────
+kalshi-creds.txt
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+secrets/
+creds/
+
+# ── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.coveragerc
+
+# ── Logs & data ────────────────────────────────────────────────────────────────
+logs/
+*.log
+data/cache/
+*.sqlite
+*.db
+
+# ── OS ─────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ────────────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
